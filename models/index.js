@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './database.sqlite'
+  storage: '/tmp/database.sqlite'
 });
 
 const Wallet = sequelize.define('Wallet', {
