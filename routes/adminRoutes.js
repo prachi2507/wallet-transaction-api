@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const adminController = require("../controllers/adminController");
 
-router.post("/wallet/credit", adminController.creditWallet);
-router.post("/wallet/debit", adminController.debitWallet);
+const { creditWallet, debitWallet } = require("../controllers/walletController");
+const clientAuth = require("../middleware/clientAuth"); // IMPORTANT
+
+router.post("/wallet/credit", clientAuth, creditWallet);
+router.post("/wallet/debit", clientAuth, debitWallet);
 
 module.exports = router;

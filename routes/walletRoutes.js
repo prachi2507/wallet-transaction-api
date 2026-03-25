@@ -1,8 +1,7 @@
-const express = require("express");
-const router = express.Router();
-const walletController = require("../controllers/walletController");
-const clientAuth = require("../middleware/clientAuth");
+const router = require('express').Router();
+const { getBalance } = require('../controllers/walletController');
+const auth = require('../middleware/clientAuth');
 
-router.get("/balance", clientAuth, walletController.getBalance);
+router.get('/balance', auth, getBalance);
 
 module.exports = router;

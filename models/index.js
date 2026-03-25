@@ -1,23 +1,26 @@
-const sequelize = require("../config/database");
+const { Sequelize, DataTypes } = require('sequelize');
 
-const Client = require("./Client");
-const Wallet = require("./Wallet");
-const Ledger = require("./Ledger");
-const Order = require("./Order");
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: './database.sqlite'
+});
 
-Client.hasOne(Wallet, { foreignKey: "client_id" });
-Wallet.belongsTo(Client);
+const Wallet = sequelize.define('Wallet', {
+  client_id: DataTypes.STRING,
+  balance: { type: DataTypes.FLOAT, defaultValue: 0 }
+});
 
-Client.hasMany(Ledger, { foreignKey: "client_id" });
-Ledger.belongsTo(Client);
+const Order = sequelize.define('Order', {
+  client_id: DataTypes.STRING,
+  amount: DataTypes.FLOAT,
+  status: DataTypes.STRING,
+  fulfillment_id: DataTypes.STRING
+});
 
-Client.hasMany(Order, { foreignKey: "client_id" });
-Order.belongsTo(Client);
+const Ledger = sequelize.define('Ledger', {
+  client_id: DataTypes.STRING,
+  type: DataTypes.STRING,
+  amount: DataTypes.FLOAT
+});
 
-module.exports = {
-  sequelize,
-  Client,
-  Wallet,
-  Ledger,
-  Order
-};
+module.exports = { sequelize, Wallet, Order, Ledger };

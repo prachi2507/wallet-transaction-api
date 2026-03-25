@@ -1,31 +1,31 @@
-const express = require("express");
-const { sequelize } = require("./models");
+require('dotenv').config();
 
-const adminRoutes = require("./routes/adminRoutes");
-const orderRoutes = require("./routes/orderRoutes");
-const walletRoutes = require("./routes/walletRoutes");
+const express = require('express');
+const morgan = require('morgan');
+
+const { sequelize } = require('./models');
+
+const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const walletRoutes = require('./routes/walletRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
+
 app.use(express.json());
-app.get("/", (req, res) => {
-  res.json({
-    message: "Wallet Transaction API Running",
-    endpoints: [
-      "POST /admin/wallet/credit",
-      "POST /admin/wallet/debit",
-      "POST /orders",
-      "GET /orders/:order_id",
-      "GET /wallet/balance"
-    ]
-  });
+app.use(morgan('dev'));
+
+app.get('/', (req, res) => {
+  res.json({ message: 'API running' });
 });
 
-app.use("/admin", adminRoutes);
-app.use("/orders", orderRoutes);
-app.use("/wallet", walletRoutes);
+app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
+app.use('/wallet', walletRoutes);
+app.use('/orders', orderRoutes);
 
 sequelize.sync().then(() => {
-  app.listen(3000, () => {
-    console.log("Server running on port 3000");
+  app.listen(process.env.PORT, () => {
+    console.log(`Server running on port ${process.env.PORT}`);
   });
 });

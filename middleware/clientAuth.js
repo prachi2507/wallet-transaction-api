@@ -1,10 +1,19 @@
-module.exports = (req, res, next) => {
-  const clientId = req.headers["client-id"];
+const jwt = require('jsonwebtoken');
 
-  if (!clientId) {
-    return res.status(400).json({ error: "client-id header required" });
+module.exports = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+
+  if (!authHeader) {
+    return res.status(401).json({ message: 'No token' });
   }
 
-  req.clientId = clientId;
-  next();
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.client = decoded;
+    next();
+  } catch {
+    res.status(401).json({ message: 'Invalid token' });
+  }
 };
